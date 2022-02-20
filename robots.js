@@ -16,30 +16,6 @@ class Random {
         return Math.floor(Math.random() * final) + inicio
     }
 }
-/*class RobotTwo {
-    constructor(x, y) {
-        this.x = 210;
-        this.y = 220;
-        this.width = 10
-        this.height = 10
-    }
-    draw() {
-        ctx.fillStyle = "#FF33F0"; // color
-        ctx.fillRect(this.x, this.y, this.width, this.height) // cuadro que va a formar la comida
-    }
-}*/
-class FrameLand {
-    constructor(x, y) {
-        this.x = 0;
-        this.y = 230;
-        this.width = 500
-        this.height = 150
-    }
-    draw() {
-        ctx.fillStyle = "#07E722"; // color
-        ctx.fillRect(this.x, this.y, this.width, this.height) // cuadro que va a formar la comida
-    }
-}
 class FrameSky {
     constructor(x, y) {
         this.x = 0;
@@ -49,6 +25,18 @@ class FrameSky {
     }
     draw() {
         ctx.fillStyle = "#1BEEE1"; // color
+        ctx.fillRect(this.x, this.y, this.width, this.height) // cuadro que va a formar la comida
+    }
+}
+class FrameLand {
+    constructor(x, y) {
+        this.x = 0;
+        this.y = 230;
+        this.width = 500
+        this.height = 150
+    }
+    draw() {
+        ctx.fillStyle = "#07E722"; // color
         ctx.fillRect(this.x, this.y, this.width, this.height) // cuadro que va a formar la comida
     }
 }
@@ -65,15 +53,10 @@ class Square {
     hitBorder() {
         return this.x < 0 || this.x > 490 || this.y < 0 || this.y > 290
     }
-    hitParachute() {
-        return this.x === this.x && this.y === this.y
-    }
 }
 class RobotOne {
     constructor() {
         this.head = new Square(Random.get(0, 500), Random.get(220, 0))
-        //this.draw()
-        //this.direction = "right"
     }
     draw() {
         ctx.fillStyle = "blue";
@@ -85,26 +68,13 @@ class RobotOne {
     left() {
         this.head.x -= 10
     }
-    /*down() {
-        this.head.y += 10
-    }*/
-    /*move() {
-        if (this.direction === "right") return this.head.x += 10
-        if (this.direction === "left") return this.head.x -= 10
-        if (this.direction === "down") return this.head.y += 10
-    }*/
     dead() {
         return this.head.hitBorder()
-    }
-    skipNext() {
-        return this.head.hitParachute()
     }
 }
 class RobotTwo {
     constructor() {
         this.head = new Square(Random.get(0, 500), Random.get(220, 0))
-        //this.draw()
-        //this.direction = "right"
     }
     draw() {
         ctx.fillStyle = "black";
@@ -116,14 +86,6 @@ class RobotTwo {
     left() {
         this.head.x -= 10
     }
-    down() {
-        this.head.y += 10
-    }
-    /*move() {
-        if (this.direction === "right") return this.head.x += 10
-        if (this.direction === "left") return this.head.x -= 10
-        if (this.direction === "down") return this.head.y += 10
-    }*/
     dead() {
         return this.head.hitBorder()
     }
@@ -131,40 +93,69 @@ class RobotTwo {
 class Parachute {
     constructor() {
         this.head = new Square(Random.get(0, 500), Random.get(220, 0))
-        //this.draw()
-        //this.direction = "right"
     }
     draw() {
         ctx.fillStyle = "#FF0000";
         this.head.draw()
     }
-    /*skipNext() {
-        return this.head.hitParachute()
-    }*/
-    /*constructor(x, y) {
-        this.x = x
-        this.y = y
-        this.width = 10
-        this.height = 10
+}
+
+function Draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    sky.draw();
+    land.draw();
+    robotOne.draw();
+    robotTwo.draw();
+    parachuteOne.draw();
+    parachuteTwo.draw();
+}
+
+function hit(a, b) {
+    var hit = false;
+    if (b.x + b.width >= a.x && b.x < a.x + a.width) {
+        if (b.y + b.height >= a.y && b.y < a.y + a.height) {
+            hit = true;
+        }
     }
-    draw() {
-        ctx.fillStyle = "#FF0000";
-        ctx.fillRect(this.x, this.y, this.width, this.height)
+    if (b.x <= a.x && b.x + b.width >= a.x + a.width) {
+        if (b.y <= a.y && b.y + b.height >= a.y + a.height) {
+            hit = true;
+        }
     }
-    static generate() {
-        return new Wall(Random.get(0, 500), Random.get(220, 0))
-    }*/
+    if (a.x <= b.x && a.x + a.width >= b.x + b.width) {
+        if (a.y <= b.y && a.y + a.height >= b.y + b.height) {
+            hit = true;
+        }
+    }
+    return hit;
+}
+
+function HitBorder() {
+    if (robotOne.dead() || robotTwo.dead()) {
+        console.log("Se acabo.")
+        window.clearInterval(animation)
+    }
+}
+
+function SkipNext() {
+    if (hit(parachuteOne.head, robotOne.head) || hit(parachuteOne.head, robotTwo.head) || hit(parachuteTwo.head, robotOne.head) || hit(parachuteTwo.head, robotTwo.head)) {
+        console.log("Hay un paracaidas.")
+    }
+}
+
+function HitRobot() {
+    if (hit(robotTwo.head, robotOne.head)) {
+        console.log("Colisión entre robots.")
+    }
 }
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
-//var pared = new Pared();
-const parachuteOne = new Parachute();
-const parachuteTwo = new Parachute();
-var land = new FrameLand();
 var sky = new FrameSky();
+var land = new FrameLand();
 var robotOne = new RobotOne();
 var robotTwo = new RobotTwo();
-//let walls = []
+const parachuteOne = new Parachute();
+const parachuteTwo = new Parachute();
 window.addEventListener("keydown", function(event) {
     event.preventDefault()
     if (event.keyCode === 37) return robotOne.left();
@@ -173,64 +164,10 @@ window.addEventListener("keydown", function(event) {
     if (event.keyCode === 68) return robotTwo.right();
     return false
 });
-/*function clashBorder() {
-    if (this.x < 0 || this.x > 490 || this.y < 0 || this.y > 290) {
-        alert("YOU LOSE.");
-    }
-}*/
-/*function main() {
-    //clashBorder();
-    robotOne.move();
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    robotOne.draw();
-    drawWall()
-    if (robotOne.dead()) {
-        console.log("Se acabo")
-        window.clearInterval(animation)
-    }
-}*/
 const animation = setInterval(function() {
-    //clashBorder();
-    robotOne.right();
-    robotOne.left();
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    sky.draw();
-    land.draw();
-    robotOne.draw();
-    robotTwo.draw();
-    parachuteOne.draw();
-    parachuteTwo.draw();
-    //drawWall()
-    if (robotOne.skipNext() == parachuteOne) {
-        console.log("Hay un paracaidas.")
-    }
-    if (robotOne.dead() || robotTwo.dead()) {
-        console.log("Se acabo.")
-        window.clearInterval(animation)
-    }
+    Draw();
+    HitBorder();
+    SkipNext();
+    HitRobot();
 }, 1000 / 5);
-/*setInterval(function() {
-    const wall = Wall.generate()
-    walls.push(wall)
-}, 4000)*/
-/*function drawWall() {
-    for (const index in walls) {
-        const wall = walls[index]
-        wall.draw()
-        //if (clash(wall, robotOne.he)) {}
-    }
-}*/
-//https://www.youtube.com/watch?v=JlMEXdtqdxQ
-/*ctx.strokeStyle = "red";
-ctx.fillStyle = "green";
-ctx.fillRect(0, 300, 50, 50);
-ctx.fillStyle = "#33ECFF";
-ctx.fillRect(0, 0, 500, 300);
-ctx.fillStyle = "yellow";
-ctx.fillRect(10, 250, 50, 50);
-ctx.fillStyle = "blue";
-ctx.fillRect(300, 250, 50, 50);
-
-https://www.youtube.com/watch?v=OUpwaerbUrA
-https://www.youtube.com/watch?v=me-l8LGHvVw
-*/
+//https://www.geeksforgeeks.org/how-to-use-goto-in-javascript/
