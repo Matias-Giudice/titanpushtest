@@ -22,7 +22,7 @@
 	while ($jugador->familia[$pjFamilia] == "riverwood") {
 		// Verifico que el rol de Trevor sea conversador
 		while ($npcTrevor->roles[$npcRol] == "conversador") {
-			echo "Hola señore! Bienvenido su casa";
+			echo "Hola señore! Bienvenido a su casa";
 			break;
 		}
 		// Verifico que el rol de Trevor sea influyente
