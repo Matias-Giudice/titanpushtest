@@ -23,5 +23,26 @@ function puedeJubilarse(dia, mes, anio, genero, aniosAporteJubilatorios) {
         }
     }
 }
-var persona = puedeJubilarse(11, 06, 1801, "Femenino", 80); // La variable "persona", obtiene el valor que retorna la función.
+function validarFechaNacimiento(fechaNacimiento) {
+    const fechaActual = new Date();
+    const anioActual = parseInt(fechaActual.getFullYear());
+    const mesActual = parseInt(fechaActual.getMonth());
+    const diaActual = parseInt(fechaActual.getDate());
+
+    const anioNaciminto = parseInt(String(fechaNacimiento).substring(0, 4));
+    const mesNacimiento = parseInt(String(fechaNacimiento).substring(5, 7));
+    const diaNacimiento = parseInt(String(fechaNacimiento).substring(8, 10));
+
+    let edad = anioActual - anioNaciminto;
+    if (mesActual < mesNacimiento) {
+        edad = edad - 1;
+    }else if (mesActual === mesNacimiento){
+        if (diaActual < diaNacimiento) {
+            edad = edad - 1;
+        }
+    }
+    return edad;
+}
+//var persona = puedeJubilarse("11/06/1801", "Femenino", 80); // La variable "persona", obtiene el valor que retorna la función.
+var persona = validarFechaNacimiento("23/09/2001");
 console.log(persona); // Muestra por la consola

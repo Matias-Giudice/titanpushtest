@@ -10,11 +10,8 @@
 </html>
 <body>
 	<?php
-		require_once 'classJugador.php';  // Verifica si el archivo ya ha sido incluido 
-        require_once 'classTrevor.php';  // Verifica si el archivo ya ha sido incluido 
-        $jugador = new Jugador(); // Objeto
-        $npcTrevor = new Trevor(); // Objeto
-        echo $jugador->seleccionRol(); // Mensaje
-        echo $npcTrevor->seleccionRol(); // Mensaje
+        include 'classNPC.php';
+        $trevor = new classNPC();
+        $trevor->interactuar();
 	?>
 </body>
